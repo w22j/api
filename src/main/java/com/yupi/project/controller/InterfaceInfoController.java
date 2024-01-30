@@ -183,7 +183,7 @@ public class InterfaceInfoController {
         String sortField = interfaceInfoQueryRequest.getSortField();
         String sortOrder = interfaceInfoQueryRequest.getSortOrder();
         String description = interfaceInfoQuery.getDescription();
-        // content 需支持模糊搜索
+        // description 需支持模糊搜索
         interfaceInfoQuery.setDescription(null);
         // 限制爬虫
         if (size > 50) {

@@ -2,12 +2,14 @@ package com.yupi.project.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.gson.Gson;
 import com.tu.apiclientsdk.client.ApiClient;
 import com.yupi.project.annotation.AuthCheck;
 import com.yupi.project.common.*;
 import com.yupi.project.constant.CommonConstant;
 import com.yupi.project.exception.BusinessException;
 import com.yupi.project.model.dto.interfaceInfo.InterfaceInfoAddRequest;
+import com.yupi.project.model.dto.interfaceInfo.InterfaceInfoInvokeRequest;
 import com.yupi.project.model.dto.interfaceInfo.InterfaceInfoQueryRequest;
 import com.yupi.project.model.dto.interfaceInfo.InterfaceInfoUpdateRequest;
 import com.yupi.project.model.entity.InterfaceInfo;
@@ -258,6 +260,40 @@ public class InterfaceInfoController {
         interfaceInfo.setStatus(InterfaceInfoEnum.OFFLINE.getValue());
         boolean result = interfaceInfoService.updateById(interfaceInfo);
         return ResultUtils.success(result);
+    }
+
+    /**
+     * 调用接口
+     *
+     * @param interfaceInfoInvokeRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/invoke")
+    public BaseResponse<Object> InvokeInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
+                                                     HttpServletRequest request) {
+        if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 判断接口是否存在
+        Long interfaceId = interfaceInfoInvokeRequest.getId();
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(interfaceId);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        // 判断接口状态
+        if (!oldInterfaceInfo.getStatus().equals(InterfaceInfoEnum.ONLINE.getValue())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "接口已关闭");
+        }
+        String requestParam = interfaceInfoInvokeRequest.getUserRequestParams();
+        Gson gson = new Gson();
+        com.tu.apiclientsdk.model.User user = gson.fromJson(requestParam, com.tu.apiclientsdk.model.User.class);
+        User loginUser = userService.getLoginUser(request);
+        String accessKey = loginUser.getAccessKey();
+        String secretKey = loginUser.getSecretKey();
+        ApiClient apiClient = new ApiClient(accessKey, secretKey);
+        String username = apiClient.getUsernameByPost(user);
+        return ResultUtils.success(username);
     }
 
 

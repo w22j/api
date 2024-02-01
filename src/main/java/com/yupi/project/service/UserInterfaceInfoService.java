@@ -2,7 +2,7 @@ package com.yupi.project.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.yupi.project.model.entity.UserInterfaceInfo;
+import com.tu.apicommon.model.entity.UserInterfaceInfo;
 
 /**
 * @author The tu

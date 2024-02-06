@@ -1,4 +1,4 @@
-package com.yupi.project.common;
+package com.tu.apicommon.common;
 
 /**
  * 错误码

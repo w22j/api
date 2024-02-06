@@ -2,13 +2,13 @@ package com.yupi.project.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.tu.apicommon.common.BaseResponse;
+import com.tu.apicommon.common.ErrorCode;
+import com.tu.apicommon.common.ResultUtils;
+import com.tu.apicommon.exception.BusinessException;
 import com.tu.apicommon.model.entity.InterfaceInfo;
 import com.tu.apicommon.model.entity.UserInterfaceInfo;
 import com.yupi.project.annotation.AuthCheck;
-import com.yupi.project.common.BaseResponse;
-import com.yupi.project.common.ErrorCode;
-import com.yupi.project.common.ResultUtils;
-import com.yupi.project.exception.BusinessException;
 import com.yupi.project.mapper.UserInterfaceInfoMapper;
 import com.yupi.project.model.vo.InterfaceInfoVO;
 import com.yupi.project.service.InterfaceInfoService;

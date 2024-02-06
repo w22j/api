@@ -2,9 +2,9 @@ package com.yupi.project.service.impl;
 
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.tu.apicommon.common.ErrorCode;
+import com.tu.apicommon.exception.BusinessException;
 import com.tu.apicommon.model.entity.InterfaceInfo;
-import com.yupi.project.common.ErrorCode;
-import com.yupi.project.exception.BusinessException;
 import com.yupi.project.mapper.InterfaceInfoMapper;
 import com.yupi.project.service.InterfaceInfoService;
 import org.apache.commons.lang3.StringUtils;

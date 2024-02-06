@@ -1,6 +1,6 @@
-package com.yupi.project.common;
+package com.tu.apicommon.common;
 
-import com.yupi.project.constant.CommonConstant;
+import com.tu.apicommon.constant.CommonConstant;
 import lombok.Data;
 
 /**

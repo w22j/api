@@ -1,4 +1,4 @@
-package com.yupi.project.constant;
+package com.tu.apicommon.constant;
 
 /**
  * 用户常量

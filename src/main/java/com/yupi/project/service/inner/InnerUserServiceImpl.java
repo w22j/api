@@ -1,10 +1,10 @@
 package com.yupi.project.service.inner;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.tu.apicommon.common.ErrorCode;
+import com.tu.apicommon.exception.BusinessException;
 import com.tu.apicommon.model.entity.User;
 import com.tu.apicommon.service.InnerUserService;
-import com.yupi.project.common.ErrorCode;
-import com.yupi.project.exception.BusinessException;
 import com.yupi.project.mapper.UserMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;

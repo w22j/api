@@ -1,6 +1,6 @@
 package com.yupi.project.model.dto.post;
 
-import com.yupi.project.common.PageRequest;
+import com.tu.apicommon.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

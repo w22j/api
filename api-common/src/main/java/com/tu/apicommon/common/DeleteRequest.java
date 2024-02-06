@@ -1,16 +1,16 @@
-package com.yupi.project.common;
+package com.tu.apicommon.common;
 
 import lombok.Data;
 
 import java.io.Serializable;
 
 /**
- * 发布下线的接口请求
+ * 删除请求
  *
  * 
  */
 @Data
-public class IdRequest implements Serializable {
+public class DeleteRequest implements Serializable {
     /**
      * id
      */

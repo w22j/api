@@ -11,24 +11,24 @@ API接口调用平台，为开发者提供API接口，提高开发者开发效�
 2. 防止攻击（安全性）
 3. 不能随便调用（限制、开通）
 4. 统计调用次数
-5. 计费
-6. 流量保护
+5. 流量保护
    <a name="gIixn"></a>
 # 技术选型
 <a name="q22iQ"></a>
 ## 后端
 
-- Spring Boot
-- Spring Boot Starter（SDK 开发）
-- Dubbo（RPC）
-- Nacos（注册中心）
-- Spring Cloud Gateway（网关、限流、日志实现）
+- 主语言：Java
+- 框架：SpringBoot 2.7.0、Mybatis-plus、Spring Cloud
+- 数据库：Mysql5.7、Redis
+- 中间件：RabbitMq
+- 注册中心：Nacos
+- 服务调用：Dubbo
+- 网关：Spring Cloud Gateway
   <a name="wlkdy"></a>
 ## 启动方式
 <a name="dFFqb"></a>
 ### 后端
-api-backend：端口7529，后端接口管理（上传、下线、用户登录、接口调用等）<br />后端接口文档地址：[http://localhost:7529/api/doc.html](http://localhost:7529/api/doc.html)<br />api-gateway：端口8090，网关<br />api-interface：端口8123，提供各种接口服务（可以有很多个且分布在各个服务器）<br />api-client-sdk：客户端SDK，无端口，发送请求到网关端口（8090），由网关进行转发到后端的api-interface
-
+api-backend：端口7529，后端接口管理（上传、下线、用户登录、接口调用等）<br />后端接口文档地址：[http://localhost:7529/api/doc.html](http://localhost:7529/api/doc.html)<br />api-gateway：端口8090，网关<br />api-interface：端口8123，提供各种接口服务（可以有很多个且分布在各个服务器）<br />api-client-sdk：客户端SDK，无端口，发送请求到网关端口（8090），由网关进行转发到后端的api-interface<br />api-third-party：端口8001，第三方服务，包含阿里云短信服务
 <a name="kJmA0"></a>
 # 详细笔记文档
 

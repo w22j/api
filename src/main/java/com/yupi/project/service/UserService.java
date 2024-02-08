@@ -56,4 +56,19 @@ public interface UserService extends IService<User> {
      * @return
      */
     boolean userLogout(HttpServletRequest request);
+
+    /**
+     * 发送短信验证码
+     * @param phoneNum
+     */
+    boolean sendMsgCaptcha(String phoneNum);
+
+    /**
+     * 用户登录（手机号）
+     * @param phoneNum
+     * @param phoneCaptcha
+     * @param request
+     * @return
+     */
+    User userLoginByPhone(String phoneNum, String phoneCaptcha, HttpServletRequest request);
 }

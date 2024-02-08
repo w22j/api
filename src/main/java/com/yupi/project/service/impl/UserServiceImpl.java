@@ -4,11 +4,15 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.tu.apicommon.common.ErrorCode;
+import com.tu.apicommon.exception.BusinessException;
+import com.tu.apicommon.model.dto.SmsDTO;
 import com.tu.apicommon.model.entity.User;
-import com.yupi.project.common.ErrorCode;
-import com.yupi.project.exception.BusinessException;
+import com.tu.apicommon.utils.AuthPhoneNumberUtil;
+
 import com.yupi.project.mapper.UserMapper;
 import com.yupi.project.service.UserService;
+import com.yupi.project.utils.SmsUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -17,14 +21,12 @@ import org.springframework.util.DigestUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import static com.yupi.project.constant.UserConstant.ADMIN_ROLE;
-import static com.yupi.project.constant.UserConstant.USER_LOGIN_STATE;
+import static com.tu.apicommon.constant.UserConstant.ADMIN_ROLE;
+import static com.tu.apicommon.constant.UserConstant.USER_LOGIN_STATE;
 
 
 /**
  * 用户服务实现类
- *
- *
  */
 @Service
 @Slf4j
@@ -33,6 +35,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private SmsUtils smsUtils;
 
     /**
      * 盐值，混淆密码
@@ -161,6 +166,54 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 移除登录态
         request.getSession().removeAttribute(USER_LOGIN_STATE);
         return true;
+    }
+
+    @Override
+    public boolean sendMsgCaptcha(String phoneNum) {
+        if (StringUtils.isBlank(phoneNum)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "手机号不能为空");
+        }
+        // 校验手机号格式
+        AuthPhoneNumberUtil authPhoneNumberUtil = new AuthPhoneNumberUtil();
+        if (!authPhoneNumberUtil.isPhoneNum(phoneNum)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "手机号格式不正确");
+        }
+        // 生成验证码
+        int code = (int) ((Math.random() * 9 + 1) * 10000);
+        SmsDTO smsDTO = new SmsDTO();
+        smsDTO.setPhoneNum(phoneNum);
+        smsDTO.setCode(String.valueOf(code));
+
+        return smsUtils.sendMsg(smsDTO);
+
+    }
+
+    @Override
+    public User userLoginByPhone(String phoneNum, String phoneCaptcha, HttpServletRequest request) {
+        // 1. 校验
+        if (StringUtils.isAnyBlank(phoneNum, phoneCaptcha)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
+        }
+        AuthPhoneNumberUtil authPhoneNumberUtil = new AuthPhoneNumberUtil();
+        if (!authPhoneNumberUtil.isPhoneNum(phoneNum)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "手机号格式错误");
+        }
+        boolean verifyCode = smsUtils.verifyCode(phoneNum, phoneCaptcha);
+        if(!verifyCode){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "手机验证码错误");
+        }
+        // 查询用户是否存在
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("phoneNum", phoneNum);
+        User user = userMapper.selectOne(queryWrapper);
+        // 用户不存在
+        if (user == null) {
+            log.info("user login failed, userAccount cannot match userPassword");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在");
+        }
+        // 3. 记录用户的登录态
+        request.getSession().setAttribute(USER_LOGIN_STATE, user);
+        return user;
     }
 
 }

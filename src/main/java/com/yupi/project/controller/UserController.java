@@ -3,12 +3,12 @@ package com.yupi.project.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.tu.apicommon.common.BaseResponse;
+import com.tu.apicommon.common.DeleteRequest;
+import com.tu.apicommon.common.ErrorCode;
+import com.tu.apicommon.common.ResultUtils;
+import com.tu.apicommon.exception.BusinessException;
 import com.tu.apicommon.model.entity.User;
-import com.yupi.project.common.BaseResponse;
-import com.yupi.project.common.DeleteRequest;
-import com.yupi.project.common.ErrorCode;
-import com.yupi.project.common.ResultUtils;
-import com.yupi.project.exception.BusinessException;
 import com.yupi.project.model.dto.user.*;
 import com.yupi.project.model.vo.UserVO;
 import com.yupi.project.service.UserService;
@@ -236,4 +236,36 @@ public class UserController {
     }
 
     // endregion
+
+    /**
+     * 发送短信验证码
+     * @param phoneNum
+     * @return
+     */
+    @GetMapping("/sms")
+    public BaseResponse<String> sendMsgCaptcha(@RequestParam String phoneNum) {
+        userService.sendMsgCaptcha(phoneNum);
+        return ResultUtils.success("已发送短信验证码");
+    }
+
+    /**
+     * 用户手机号登录
+     *
+     * @param userLoginRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/loginByPhone")
+    public BaseResponse<User> userLoginByPhone(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
+        if (userLoginRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        String phoneNum = userLoginRequest.getPhoneNum();
+        String phoneCaptcha = userLoginRequest.getPhoneCaptcha();
+        if (StringUtils.isAnyBlank(phoneNum, phoneCaptcha)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = userService.userLoginByPhone(phoneNum, phoneCaptcha, request);
+        return ResultUtils.success(user);
+    }
 }

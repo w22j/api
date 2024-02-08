@@ -14,11 +14,20 @@ spring:
   session:
     timeout: 86400
     store-type: none
-#  # redis 配置
-#  redis:
-#    port: 6379
-#    host: localhost
-#    database: 0
+  # redis 配置
+  redis:
+    port: 6379
+    host: localhost
+    database: 0
+  # rabbitMQ
+  rabbitmq:
+    host: localhost
+    port: 5672
+    virtual-host: /api
+    username: api
+    password: 123
+    publisher-confirm-type: correlated
+    publisher-returns: true
 server:
   port: 7529
   servlet:

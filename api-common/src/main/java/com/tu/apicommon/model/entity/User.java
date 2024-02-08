@@ -41,6 +41,11 @@ public class User implements Serializable {
     private Integer gender;
 
     /**
+     * 手机号
+     */
+    private String phoneNum;
+
+    /**
      * 用户角色: user, admin
      */
     private String userRole;
